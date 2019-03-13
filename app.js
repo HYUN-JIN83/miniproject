@@ -2,6 +2,8 @@ import express from 'express'
 import {router} from './routes/admin'
 import path from 'path'
 import helmet from 'helmet'
+import logger from 'morgan'
+import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 
 const db = mongoose.connection
@@ -18,6 +20,10 @@ const port = 3000
 app.use(helmet())
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
+app.use(logger('dev'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+
 
 app.get('/', (req, res) => {
     res.send('first app')

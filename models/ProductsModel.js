@@ -2,8 +2,8 @@ import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 import {autoIncrement} from 'mongoose-plugin-autoinc'
 
-//필드명을
-var ProductsSchema = new Schema({
+//필드명
+const ProductsSchema = new Schema({
     name : String,              //제품명
     price : Number,             //가격
     description : String,       //설명
@@ -17,4 +17,5 @@ var ProductsSchema = new Schema({
 // model : 생성할 document 이름
 // field : primary key , startAt : 1부터 시작
 ProductsSchema.plugin( autoIncrement , { model : 'products' , field : 'id' , startAt : 1 })
-module.exports = mongoose.model('products', ProductsSchema)
+const model = mongoose.model('products', ProductsSchema)
+export default model
