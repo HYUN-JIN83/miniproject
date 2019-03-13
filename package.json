@@ -1,0 +1,23 @@
+{
+  "name": "miniproject",
+  "version": "1.0.0",
+  "description": "shoppingmall",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon --exec babel-node app.js"
+  },
+  "keywords": [
+    "shoppingmall"
+  ],
+  "author": "HyunJinKim",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.4",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
