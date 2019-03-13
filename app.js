@@ -5,7 +5,7 @@ import helmet from 'helmet'
 import logger from 'morgan'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
-
+mongoose.Promise = global.Promise   // 에러처리
 const db = mongoose.connection
 db.on('error', console.error)
 db.once('open', () => {

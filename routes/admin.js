@@ -3,8 +3,11 @@ import ProductsModel from '../models/ProductsModel'
 
 export const router = express.Router()
 
-router.get('/products/write', (req, res) => {
-    res.render('admin/form')
+// 리스트 출력
+router.get('/products', (req, res) => {
+    ProductsModel.find((err, products) => {
+        res.render('admin/products', {products})
+    })
 })
 
 // DB 저장
