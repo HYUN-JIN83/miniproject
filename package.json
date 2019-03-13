@@ -17,6 +17,7 @@
     "@babel/preset-env": "^7.3.4",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "helmet": "^3.16.0",
     "path": "^0.12.7"
   },
   "devDependencies": {
