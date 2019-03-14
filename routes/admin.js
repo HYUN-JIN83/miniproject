@@ -1,5 +1,6 @@
 import express from 'express'
 import ProductsModel from '../models/ProductsModel'
+import CommentsModel from '../models/CommentsModel'
 
 export const router = express.Router()
 
@@ -45,7 +46,7 @@ router.post('/products/edit/:id', (req, res) => {
     const query = {
         name : req.body.name,
         price : req.body.price,
-        description : req.body.description,
+        description : req.body.description
     }
 
     //update의 첫번째 인자는 조건, 두번째 인자는 바뀔 값들
@@ -57,5 +58,19 @@ router.post('/products/edit/:id', (req, res) => {
 router.get('/products/delete/:id', (req, res) => {
     ProductsModel.remove({ id : req.params.id }, (err) => {
         res.redirect('/admin/products')
+    })
+})
+
+router.post('/products/ajax_comment/insert', (req,res) => {
+    const comment = new CommentsModel({
+        content : req.body.content,
+        product_id : parseInt(req.body.product_id)
+    })
+    comment.save((err, comment) => {
+        res.json({
+            id : comment.id,
+            content : comment.content,
+            message : 'success'
+        })
     })
 })

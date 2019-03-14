@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 import {autoIncrement} from 'mongoose-plugin-autoinc'
 
+
 //필드명
 const ProductsSchema = new Schema({
     name : String,              //제품명
