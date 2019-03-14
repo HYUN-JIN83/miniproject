@@ -50,6 +50,12 @@ router.post('/products/edit/:id', (req, res) => {
 
     //update의 첫번째 인자는 조건, 두번째 인자는 바뀔 값들
     ProductsModel.update({ id : req.params.id }, { $set : query }, (err) => {
-        res.redirect('/admin/products/detail/' + req.params.id ); //수정후 본래보던 상세페이지로 이동
+        res.redirect('/admin/products/detail/' + req.params.id ) //수정후 본래보던 상세페이지로 이동
+    })
+})
+
+router.get('/products/delete/:id', (req, res) => {
+    ProductsModel.remove({ id : req.params.id }, (err) => {
+        res.redirect('/admin/products')
     })
 })
