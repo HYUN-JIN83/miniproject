@@ -15,7 +15,11 @@
 
             <!-- 댓글영역  -->
             <hr />
-            <div id="comment_area"></div>
+            <div id="comment_area">
+                <% comments.forEach( function(comment){ %>
+                    <div><%=comment.content%></div>
+                <%});%>
+            </div>
             <div>
                 댓글작성하기
                 <form id="commentForm" action="" method="post">

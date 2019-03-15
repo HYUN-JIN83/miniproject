@@ -12,19 +12,19 @@ const ProductsSchema = new Schema({
         type : Date,
         default : Date.now()
     }
-});
+})
 
 // virtual 변수는 호출되면 실행하는 함수
 // set: 변수의 값을 바꾸거나 셋팅하면 호출
 // get: getDate변수를 호출하는 순간 날짜 월일이 찍힌다.
-ProductsSchema.virtual('getDate').get(function(){
+ProductsSchema.virtual('getDate').get(function () {
     const date = new Date(this.created_at)
     return {
         year : date.getFullYear(),
         month : date.getMonth()+1,
         day : date.getDate()
-    };
-});
+    }
+})
 
 // 1씩 증가하는 primary Key를 만든다
 // model : 생성할 document 이름

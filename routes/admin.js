@@ -30,7 +30,9 @@ router.post('/products/write', (req, res) => {
 router.get('/products/detail/:id' , (req, res) => {
     //url 에서 변수 값을 받아올떈 req.params.id 로 받아온다
     ProductsModel.findOne( { 'id' :  req.params.id } , (err ,product) => {
-        res.render('admin/productsDetail', { product })
+        CommentsModel.find({product_id : req.params.id}, (err, comments) => {
+            res.render('admin/productsDetail', {product, comments})
+        })
     })
 })
 
