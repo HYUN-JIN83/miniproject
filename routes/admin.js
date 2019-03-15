@@ -1,6 +1,8 @@
 import express from 'express'
 import ProductsModel from '../models/ProductsModel'
 import CommentsModel from '../models/CommentsModel'
+import csrf from 'csurf'
+const csrfProtection = csrf({cookie:true})
 
 export const router = express.Router()
 
@@ -11,20 +13,25 @@ router.get('/products', (req, res) => {
     })
 })
 
-router.get('/products/write', (req, res) => {
-    res.render('admin/form', {product:""})
+router.get('/products/write', csrfProtection, (req, res) => {
+    res.render('admin/form', {product:"", csrfToken: req.csrfToken()})
 })
 
 // DB 저장
-router.post('/products/write', (req, res) => {
+router.post('/products/write', csrfProtection, (req, res) => {
     const product = new ProductsModel({
         name: req.body.name,
         price: req.body.price,
         description: req.body.description
     })
-    product.save((err) => {
-        res.redirect('/admin/products')
-    })
+    
+    // 유효성체크
+    if(!product.validateSync()){
+        product.save((err) => {
+            res.redirect('/admin/products')
+        })
+    }
+    
 })
 
 router.get('/products/detail/:id' , (req, res) => {
@@ -36,14 +43,14 @@ router.get('/products/detail/:id' , (req, res) => {
     })
 })
 
-router.get('/products/edit/:id' , (req, res) => {
+router.get('/products/edit/:id' , csrfProtection, (req, res) => {
     //기존에 폼에 value안에 값을 셋팅하기 위해 만든다.
     ProductsModel.findOne({ id : req.params.id } , (err, product) => {
-        res.render('admin/form', { product })
+        res.render('admin/form', {product, csrfToken: req.csrfToken()})
     })
 })
 
-router.post('/products/edit/:id', (req, res) => {
+router.post('/products/edit/:id', csrfProtection, (req, res) => {
     //넣을 변수 값을 셋팅한다
     const query = {
         name : req.body.name,

@@ -4,6 +4,7 @@ import path from 'path'
 import helmet from 'helmet'
 import logger from 'morgan'
 import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 import mongoose from 'mongoose'
 mongoose.Promise = global.Promise   // 에러처리
 const db = mongoose.connection
@@ -23,6 +24,7 @@ app.set('view engine', 'ejs')
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(cookieParser())
 
 
 app.get('/', (req, res) => {
