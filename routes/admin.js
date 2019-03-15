@@ -76,3 +76,9 @@ router.post('/products/ajax_comment/insert', (req,res) => {
         })
     })
 })
+
+router.post('/products/ajax_comment/delete', (req, res) => {
+    CommentsModel.remove({ id : req.body.comment_id } , (err) => {
+        res.json({ message : "success" })
+    })
+})
