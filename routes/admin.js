@@ -1,8 +1,26 @@
 import express from 'express'
 import ProductsModel from '../models/ProductsModel'
 import CommentsModel from '../models/CommentsModel'
+// csrf
 import csrf from 'csurf'
 const csrfProtection = csrf({cookie:true})
+
+// 이미지 저장위치
+import path from 'path'
+import fs from 'fs'
+const uploadDir = path.join(__dirname, '../uploads')
+
+// multer
+import multer from 'multer'
+const storage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, uploadDir)
+    },
+    filename: (req, file, callback) => {
+        callback(null, 'products-'+ Date.now() + '.'+ file.mimetype.split('/')[1])
+    }
+})
+const upload = multer({storage})
 
 export const router = express.Router()
 
@@ -18,10 +36,11 @@ router.get('/products/write', csrfProtection, (req, res) => {
 })
 
 // DB 저장
-router.post('/products/write', csrfProtection, (req, res) => {
+router.post('/products/write', upload.single('thumbnail'), csrfProtection, (req, res) => {
     const product = new ProductsModel({
         name: req.body.name,
         price: req.body.price,
+        thumbnail: (req.file) ? req.file.filename: "",
         description: req.body.description
     })
     
@@ -50,17 +69,21 @@ router.get('/products/edit/:id' , csrfProtection, (req, res) => {
     })
 })
 
-router.post('/products/edit/:id', csrfProtection, (req, res) => {
-    //넣을 변수 값을 셋팅한다
-    const query = {
-        name : req.body.name,
-        price : req.body.price,
-        description : req.body.description
-    }
+router.post('/products/edit/:id', upload.single('thumbnail'), csrfProtection, (req, res) => {
+    //그전에 저장되어 있는 파일명 받아옴
+    ProductsModel.findOne( {id : req.params.id} , (err, product) => {
+        //넣을 변수 값을 셋팅한다
+        const query = {
+            name : req.body.name,
+            thumbnail: (req.file) ? req.file.filename: product.thumbnail,
+            price : req.body.price,
+            description : req.body.description
+        }
 
-    //update의 첫번째 인자는 조건, 두번째 인자는 바뀔 값들
-    ProductsModel.update({ id : req.params.id }, { $set : query }, (err) => {
-        res.redirect('/admin/products/detail/' + req.params.id ) //수정후 본래보던 상세페이지로 이동
+        //update의 첫번째 인자는 조건, 두번째 인자는 바뀔 값들
+        ProductsModel.update({ id : req.params.id }, { $set : query }, (err) => {
+            res.redirect('/admin/products/detail/' + req.params.id ) //수정후 본래보던 상세페이지로 이동
+        })
     })
 })
 

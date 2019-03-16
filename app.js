@@ -26,6 +26,9 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 
+// upload path
+app.use('/uploads', express.static('uploads'))
+
 
 app.get('/', (req, res) => {
     res.send('first app')
