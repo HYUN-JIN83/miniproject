@@ -72,7 +72,12 @@ router.get('/products/edit/:id' , csrfProtection, (req, res) => {
 router.post('/products/edit/:id', upload.single('thumbnail'), csrfProtection, (req, res) => {
     //그전에 저장되어 있는 파일명 받아옴
     ProductsModel.findOne( {id : req.params.id} , (err, product) => {
-        //넣을 변수 값을 셋팅한다
+        //요청중에 파일이 존재 할시 이전이미지 지움.
+        if(req.file && product.thumbnail){             
+            fs.unlinkSync( uploadDir + '/' + product.thumbnail );
+        }
+
+        //넣을 변수 값을 셋팅
         const query = {
             name : req.body.name,
             thumbnail: (req.file) ? req.file.filename: product.thumbnail,
