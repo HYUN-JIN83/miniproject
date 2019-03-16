@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 })
 const upload = multer({storage})
 
-export const router = express.Router()
+const router = express.Router()
 
 // 리스트 출력
 router.get('/products', (req, res) => {
@@ -117,3 +117,5 @@ router.post('/products/ajax_comment/delete', (req, res) => {
         res.json({ message : "success" })
     })
 })
+
+module.exports = router

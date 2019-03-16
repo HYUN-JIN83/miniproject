@@ -1,5 +1,6 @@
 import express from 'express'
-import {router} from './routes/admin'
+import admin from './routes/admin'
+import accounts from './routes/accounts'
 import path from 'path'
 import helmet from 'helmet'
 import logger from 'morgan'
@@ -34,7 +35,8 @@ app.get('/', (req, res) => {
     res.send('first app')
 })
 
-app.use('/admin', router)
+app.use('/admin', admin)
+app.use('/accounts', accounts)
 
 app.listen(port, () => {
     console.log('Server Running')
