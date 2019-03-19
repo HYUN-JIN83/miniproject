@@ -1,6 +1,7 @@
 import express from 'express'
 import ProductsModel from '../models/ProductsModel'
 import CommentsModel from '../models/CommentsModel'
+import loginRequired from '../libs/loginRequired'
 // csrf
 import csrf from 'csurf'
 const csrfProtection = csrf({cookie:true})
@@ -31,17 +32,18 @@ router.get('/products', (req, res) => {
     })
 })
 
-router.get('/products/write', csrfProtection, (req, res) => {
+router.get('/products/write', loginRequired, csrfProtection, (req, res) => {
     res.render('admin/form', {product:"", csrfToken: req.csrfToken()})
 })
 
 // DB 저장
-router.post('/products/write', upload.single('thumbnail'), csrfProtection, (req, res) => {
+router.post('/products/write', loginRequired, upload.single('thumbnail'), csrfProtection, (req, res) => {
     const product = new ProductsModel({
         name: req.body.name,
         price: req.body.price,
         thumbnail: (req.file) ? req.file.filename: "",
-        description: req.body.description
+        description: req.body.description,
+        username : req.user.username
     })
     
     // 유효성체크
