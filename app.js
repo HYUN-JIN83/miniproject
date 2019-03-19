@@ -51,6 +51,15 @@ app.use(passport.session())
 //플래시 메시지 관련
 app.use(flash())
 
+//로그인 정보 뷰에서만 변수로 셋팅
+app.use((req, res, next) => {
+    app.locals.isLogin = req.isAuthenticated() // -> passport에서 제공하는 함수
+                                               // 로그인 : true, 로그인X : false
+    //app.locals.urlparameter = req.url         //현재 url 정보를 보내고 싶으면 이와같이 셋팅
+    //app.locals.userData = req.user            //사용 정보를 보내고 싶으면 이와같이 셋팅
+    next()
+  })
+
 app.get('/', (req, res) => {
     res.send('first app')
 })
