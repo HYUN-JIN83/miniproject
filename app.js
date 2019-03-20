@@ -3,6 +3,7 @@ import admin from './routes/admin'
 import accounts from './routes/accounts'
 import auth from './routes/auth'
 import home from './routes/home'
+import chat from './routes/chat'
 import path from 'path'
 import helmet from 'helmet'
 import logger from 'morgan'
@@ -66,5 +67,18 @@ app.use('/', home)
 app.use('/admin', admin)
 app.use('/accounts', accounts)
 app.use('/auth', auth)
+app.use('/chat', chat)
 
-app.listen(port, () => console.log('Server Running'))
+/* const server = app.listen(port, () => console.log('Server Running'))
+const listen = require('socket.io')
+io.on('connection', (socket) => console.log('소켓 접속')) */
+
+const server = app.listen( port, () => console.log('Server Running', port))
+
+import listen from 'socket.io'
+const io = listen(server)
+io.on('connection', (socket) => { 
+  socket.on('client message', (data) => {     // index.ejs 에서의 이벤트명과 일치시킨다
+    io.emit('server message', data.message)
+  })
+})
