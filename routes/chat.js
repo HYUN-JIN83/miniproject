@@ -1,6 +1,13 @@
 import express from 'express'
 const router = express.Router()
 
-router.get('/', (req,res) => res.render('chat/index'))
+router.get('/', (req,res) => {
+    if(!req.isAuthenticated()){
+        res.send('<script>alert("로그인이 필요한 서비스입니다.");\
+        location.href="/accounts/login";</script>')
+    }else{
+        res.render('chat/index')
+    }
+})
 
 module.exports = router

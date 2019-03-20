@@ -37,14 +37,22 @@ app.use(cookieParser())
 app.use('/uploads', express.static('uploads'))
 
 //session 관련 셋팅
-app.use(session({
+import connectMongo from 'connect-mongo'
+const MongoStore = connectMongo(session)
+
+const sessionMiddleWare = session({
     secret: 'hjkimt',
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: 2000 * 60 * 60 //지속시간 2시간
-    }
-}))
+      maxAge: 2000 * 60 * 60    //지속시간 2시간
+    },
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        ttl: 14 * 24 * 60 * 60
+    })
+})
+app.use(sessionMiddleWare)
  
 //passport 적용
 app.use(passport.initialize())
@@ -69,9 +77,15 @@ app.use('/accounts', accounts)
 app.use('/auth', auth)
 app.use('/chat', chat)
 
-const server = app.listen( port, () => console.log('Server Running', port))
+const server = app.listen(port, () => console.log('Server Running', port))
 
 import listen from 'socket.io'
-import socketConnection from './libs/socketConnection'
 const io = listen(server)
+
+//socket.io passport에 접근하기 위한 미들웨어적용
+io.use((socket, next) => {
+  sessionMiddleWare(socket.request, socket.request.res, next)
+})
+
+import socketConnection from './libs/socketConnection'
 socketConnection(io)
