@@ -2,6 +2,7 @@ import express from 'express'
 import admin from './routes/admin'
 import accounts from './routes/accounts'
 import auth from './routes/auth'
+import home from './routes/home'
 import path from 'path'
 import helmet from 'helmet'
 import logger from 'morgan'
@@ -60,7 +61,7 @@ app.use((req, res, next) => {
     next()
   })
 
-app.get('/', (req, res) => res.send('first app'))
+app.use('/', home)
 
 app.use('/admin', admin)
 app.use('/accounts', accounts)
