@@ -2,6 +2,7 @@ import express from 'express'
 import ProductsModel from '../models/ProductsModel'
 import CommentsModel from '../models/CommentsModel'
 import loginRequired from '../libs/loginRequired'
+import co from 'co'
 // csrf
 import csrf from 'csurf'
 const csrfProtection = csrf({cookie:true})
@@ -56,11 +57,15 @@ router.post('/products/write', loginRequired, upload.single('thumbnail'), csrfPr
 })
 
 router.get('/products/detail/:id' , (req, res) => {
-    //url 에서 변수 값을 받아올떈 req.params.id 로 받아온다
-    ProductsModel.findOne( { 'id' :  req.params.id } , (err ,product) => {
-        CommentsModel.find({product_id : req.params.id}, (err, comments) => {
-            res.render('admin/productsDetail', {product, comments})
-        })
+    const getData = async() => {
+        return {
+            product : await ProductsModel.findOne({'id' : req.params.id}).exec(),
+            comments : await CommentsModel.find({'product_id': req.params.id}).exec()
+        }
+    }
+    getData().then((result) => {
+        res.render('admin/productsDetail', 
+        {product: result.product, comments: result.comments})
     })
 })
 
@@ -119,5 +124,12 @@ router.post('/products/ajax_comment/delete', (req, res) => {
         res.json({ message : "success" })
     })
 })
+
+router.post('/products/ajax_summernote/', loginRequired, 
+    upload.single('thumbnail'),
+    (req, res) => {
+        res.send('/uploads/' +req.file.filename)
+    }
+)
 
 module.exports = router
