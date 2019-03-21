@@ -3,6 +3,7 @@ import ProductsModel from '../models/ProductsModel'
 import CommentsModel from '../models/CommentsModel'
 import loginRequired from '../libs/loginRequired'
 import co from 'co'
+import paginate from 'express-paginate'
 // csrf
 import csrf from 'csurf'
 const csrfProtection = csrf({cookie:true})
@@ -27,10 +28,24 @@ const upload = multer({storage})
 const router = express.Router()
 
 // 리스트 출력
-router.get('/products', (req, res) => {
-    ProductsModel.find((err, products) => {
-        res.render('admin/products', {products})
-    })
+router.get('/products', paginate.middleware(5, 50), async (req, res) => {
+    try{
+        const [results, itemCount] = await Promise.all([
+            // -created_at : 내림차순     skip: 시작지점    limit: 끝나는지점 
+            ProductsModel.find().sort('-created_at').limit(req.query.limit).skip(req.skip).exec(),
+            ProductsModel.count({})     
+        ])                    
+        const pageCount = Math.ceil(itemCount / req.query.limit)
+        const pages = paginate.getArrayPages(req)(5, pageCount, req.query.page)
+
+        res.render('admin/products', {
+            products: results,
+            pages: pages,
+            pageCount: pageCount
+        })
+    }catch(error){
+        throw(error)
+    }
 })
 
 router.get('/products/write', loginRequired, csrfProtection, (req, res) => {
@@ -68,6 +83,7 @@ router.get('/products/detail/:id' , (req, res) => {
         {product: result.product, comments: result.comments})
     })
 })
+
 
 router.get('/products/edit/:id' , csrfProtection, (req, res) => {
     //기존에 폼에 value안에 값을 셋팅하기 위해 만든다.
