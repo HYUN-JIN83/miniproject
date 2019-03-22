@@ -6,6 +6,7 @@ import home from './routes/home'
 import chat from './routes/chat'
 import products from './routes/products'
 import cart from './routes/cart'
+import checkout from './routes/checkout'
 import path from 'path'
 import helmet from 'helmet'
 import logger from 'morgan'
@@ -82,6 +83,7 @@ app.use('/auth', auth)
 app.use('/chat', chat)
 app.use('/products', products)
 app.use('/cart', cart)
+app.use('/checkout', checkout)
 
 const server = app.listen(port, () => console.log('Server Running', port))
 
