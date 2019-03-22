@@ -4,6 +4,8 @@ import accounts from './routes/accounts'
 import auth from './routes/auth'
 import home from './routes/home'
 import chat from './routes/chat'
+import products from './routes/products'
+import cart from './routes/cart'
 import path from 'path'
 import helmet from 'helmet'
 import logger from 'morgan'
@@ -35,6 +37,9 @@ app.use(cookieParser())
 
 // upload path
 app.use('/uploads', express.static('uploads'))
+
+// static path 추가
+app.use('/static', express.static('static'))
 
 //session 관련 셋팅
 import connectMongo from 'connect-mongo'
@@ -71,11 +76,12 @@ app.use((req, res, next) => {
   })
 
 app.use('/', home)
-
 app.use('/admin', admin)
 app.use('/accounts', accounts)
 app.use('/auth', auth)
 app.use('/chat', chat)
+app.use('/products', products)
+app.use('/cart', cart)
 
 const server = app.listen(port, () => console.log('Server Running', port))
 
